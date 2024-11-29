@@ -30,7 +30,7 @@ Ensure you have the following installed:
 
 - **Node.js** (for the backend): [Download Node.js](https://nodejs.org/)
 - **Flutter** (for the frontend): [Install Flutter](https://flutter.dev/docs/get-started/install)
-- **MongoDB/PostgreSQL/SQL Database** (as per backend requirements)
+- **SQL Database** (as per backend requirements)
 - **Git** (to clone the repository)
 
 ## Folder Structure
