@@ -6,10 +6,10 @@ class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
 
   @override
-  _HomeTabState createState() => _HomeTabState();
+  HomeTabState createState() => HomeTabState();
 }
 
-class _HomeTabState extends State<HomeTab> {
+class HomeTabState extends State<HomeTab> {
   final ApiService apiService = ApiService(); // Initialize ApiService
   List<dynamic> books = []; // List to hold fetched books
   bool isLoading = true; // Loading state

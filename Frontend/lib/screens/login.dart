@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:projectmoblie/screens/Home.dart';
 import 'package:projectmoblie/screens/Lender.dart';
 import 'package:projectmoblie/screens/Register.dart';
-import 'package:projectmoblie/screens/staff.dart';
+import 'package:projectmoblie/screens/staff/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 

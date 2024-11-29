@@ -116,12 +116,12 @@ class ReturnTab extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      "Loan date: ${DateHelpers.formatDate(book['borrow_date']) ?? '-'}",
+                                      "Loan date: ${DateHelpers.formatDate(book['borrow_date'])}",
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      "Returned date: ${DateHelpers.formatDate(book['return_date']) ?? '-'}",
+                                      "Returned date: ${DateHelpers.formatDate(book['return_date'])}",
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                     const SizedBox(height: 15),

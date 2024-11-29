@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import '../../../utils/ApiService.dart';
 
 class DashboardTab extends StatefulWidget {
-  const DashboardTab({Key? key}) : super(key: key);
+  const DashboardTab({super.key});
 
   @override
-  _DashboardTabState createState() => _DashboardTabState();
+  DashboardTabState createState() => DashboardTabState();
 }
 
-class _DashboardTabState extends State<DashboardTab> {
+class DashboardTabState extends State<DashboardTab> {
   final ApiService apiService = ApiService(); // API service instance
   Map<String, dynamic> dashboardData = {}; // To store the fetched data
   bool isLoading = true; // Loading state

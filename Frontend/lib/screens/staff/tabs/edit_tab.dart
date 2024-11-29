@@ -8,10 +8,10 @@ class EditTab extends StatefulWidget {
   const EditTab({super.key});
 
   @override
-  _EditTabState createState() => _EditTabState();
+  EditTabState createState() => EditTabState();
 }
 
-class _EditTabState extends State<EditTab> {
+class EditTabState extends State<EditTab> {
   final ApiService apiService = ApiService(); // API service instance
   List<dynamic> books = []; // List to hold fetched books
   bool isLoading = true; // Loading state

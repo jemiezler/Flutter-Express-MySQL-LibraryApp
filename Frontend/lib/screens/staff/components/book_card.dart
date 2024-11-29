@@ -64,7 +64,7 @@ class BookCard extends StatelessWidget {
 
   void _updateBookStatus(BuildContext context, String newStatus) async {
     try {
-      final response = await apiService.patch(
+      await apiService.patch(
         '/books/status/$bookId',
         body: {'status': newStatus},
       );
@@ -88,7 +88,6 @@ class BookCard extends StatelessWidget {
           backgroundColor: Colors.red,
         ),
       );
-      print('Error updating book status: $e');
     }
   }
 

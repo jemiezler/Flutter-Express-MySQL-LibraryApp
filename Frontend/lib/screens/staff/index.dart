@@ -4,8 +4,7 @@ import 'package:projectmoblie/screens/staff/tabs/dashboard_tab.dart';
 import 'package:projectmoblie/screens/staff/tabs/edit_tab.dart';
 import 'package:projectmoblie/screens/staff/tabs/home_tab.dart';
 
-import 'staff/tabs/return_tab.dart';
-
+import 'tabs/return_tab.dart';
 
 class Staff extends StatefulWidget {
   const Staff({super.key});
