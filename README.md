@@ -43,4 +43,28 @@ Ensure you have the following installed:
 1. Navigate to the `backend/` folder:
    ```bash
    cd backend
+   ```
+2. install dependency to `backend/`:
+   ```bash
+   npm i
+   ```
+### Frontend Setup
+1. Navigate to the `backend/` folder:
+   ```bash
+   cd frontend
+   ```
+2. install dependency to `frontend/`:
+   ```bash
+   flutter pub get
+   ```
+
+## Running the Project
+1. run the `backend/` project using:
+   ```bash
+   npx nodemon server.js
+   ```
+2. run the `frontend/` project using:
+   ```bash
+   flutter run
+   ```
 
