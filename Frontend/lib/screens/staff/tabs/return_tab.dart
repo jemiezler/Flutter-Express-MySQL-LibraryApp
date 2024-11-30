@@ -7,13 +7,44 @@ class ReturnTab extends StatelessWidget {
 
   ReturnTab({super.key});
 
-  // Fetch books with `return` status from the API
+  // Fetch books with `returned` status from the API
   Future<List<dynamic>> fetchReturnedBooks() async {
     try {
       final data = await apiService.get('/history?status=returned'); // Query for returned books
       return data;
     } catch (error) {
       throw Exception("Error fetching returned books: $error");
+    }
+  }
+
+  // Handle accepting a return
+  void acceptReturn(BuildContext context, String historyId) async {
+    try {
+      await apiService.patch('/history/$historyId/staff', body: {
+        'dateTime': DateTime.now().toIso8601String(), // Current date and time
+      });
+
+      // Show success feedback
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Return accepted successfully!',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (error) {
+      // Show error feedback
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Failed to accept return.',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -30,7 +61,7 @@ class ReturnTab extends StatelessWidget {
           return Center(
             child: Text(
               "Error: ${snapshot.error}",
-              style: const TextStyle(fontSize: 16, color: Colors.red),
+              style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 255, 255, 255)),
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -141,9 +172,9 @@ class ReturnTab extends StatelessWidget {
                                               vertical: 10,
                                             ),
                                           ),
-                                          onPressed: () {
-                                            // Handle return action
-                                          },
+                                          onPressed: () => acceptReturn(
+                                              context,
+                                              book['history_id'].toString()),
                                           child: const Text(
                                             "Accept Return",
                                             style: TextStyle(

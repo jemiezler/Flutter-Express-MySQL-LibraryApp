@@ -58,8 +58,6 @@ exports.findAll = (status = null) => {
   });
 };
 
-
-
 exports.updateHistory = ({ approverId, approveDate, historyId }) => {
   return new Promise((resolve, reject) => {
     const query = `
@@ -154,6 +152,27 @@ exports.findByStatus = (borrower_id, conditions = {}) => {
 
     db.query(baseQuery, queryParams, (err, results) => {
       if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
+
+exports.updateStaffAndDateTime = ({ historyId, staffId, dateTime }) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      UPDATE history
+      SET staff_id = ?, return_date = ?
+      WHERE history_id = ?;
+    `;
+
+    db.query(query, [staffId, dateTime, historyId], (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return reject(err);
+      }
+      if (results.affectedRows === 0) {
+        return reject(new Error("History record not found"));
+      }
       resolve(results);
     });
   });

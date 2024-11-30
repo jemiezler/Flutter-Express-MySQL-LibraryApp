@@ -15,4 +15,6 @@ router.post('/approve/:history_id', checkRole('lender'),historyController.approv
 // Disapprove a history record
 router.post('/disapprove/:history_id', checkRole('lender'),historyController.disapproveLender);
 
+router.patch("/:id/staff", historyController.updateStaffAndDateTime);
+
 module.exports = router;
