@@ -67,7 +67,7 @@ class EditTabState extends State<EditTab> {
                           title: book['book_name'],
                           subtitle: book['book_details'],
                           status: book['status'],
-                          imageUrl: book['book_image'],
+                          imageUrl: book['book_image'], category: book['category'],
                         ),
                       );
                     },
@@ -174,7 +174,7 @@ class EditTabState extends State<EditTab> {
 
     // Predefined list of categories
     final List<String> categories = [
-      'Sci-Fi',
+      'Sci-fi',
       'Academic',
       'Fantasy',
       'Horror'

@@ -38,13 +38,14 @@ exports.addBook = async (req, res) => {
 
 exports.editBook = async (req, res) => {
     const { id } = req.params;
-    const { book_name, book_details, category } = req.body;
+    const { book_name, book_details, category, status } = req.body;
     const book_image = req.file?.path; // Optional image update
 
     // Build the update object dynamically from the provided fields
     const updateFields = {};
     if (book_name !== undefined) updateFields.book_name = book_name;
     if (book_details !== undefined) updateFields.book_details = book_details;
+    if (status !== undefined) updateFields.status = status;
     if (category !== undefined) updateFields.category = category;
     if (book_image) updateFields.book_image = book_image;
 

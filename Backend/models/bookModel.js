@@ -20,7 +20,7 @@ exports.create = ({ book_name, book_details, book_image, category  }) => {
     });
 };
 
-exports.edit = ({ id, book_name, book_details, book_image, category }) => {
+exports.edit = ({ id, book_name, book_details, book_image, category, status }) => {
     return new Promise((resolve, reject) => {
         const updates = [];
         const values = [];
@@ -42,6 +42,10 @@ exports.edit = ({ id, book_name, book_details, book_image, category }) => {
             updates.push('category = ?');
             values.push(category);
         }
+        if (status) {
+            updates.push('status = ?');
+            values.push(status);
+        }
 
         if (updates.length === 0) {
             return reject(new Error('No fields to update'));
@@ -53,7 +57,7 @@ exports.edit = ({ id, book_name, book_details, book_image, category }) => {
         db.query(query, values, (err, results) => {
             if (err) return reject(err);
             if (results.affectedRows === 0) return reject(new Error('Book not found'));
-            resolve({ id, book_name, book_details, book_image, category });
+            resolve({ id, book_name, book_details, book_image, category, status });
         });
     });
 };
