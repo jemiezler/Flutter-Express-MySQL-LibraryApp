@@ -231,7 +231,7 @@ class EditTabState extends State<EditTab> {
       onSubmit: (bookName, bookDetails, imageFile, category) async {
         try {
           if (imageFile != null) {
-            await apiService.postWithFile(
+            await apiService.patchWithFile(
               '/books/${book['book_id']}',
               fields: {
                 'book_name': bookName,
@@ -242,7 +242,7 @@ class EditTabState extends State<EditTab> {
               fileFieldName: 'file',
             );
           } else {
-            await apiService.put(
+            await apiService.patch(
               '/books/${book['book_id']}',
               body: {
                 'book_name': bookName,

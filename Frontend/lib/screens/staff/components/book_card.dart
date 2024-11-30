@@ -226,8 +226,8 @@ class BookCard extends StatelessWidget {
                   await apiService.patch(
                     '/books/$bookId',
                     body: {
-                      'title': newTitle,
-                      'subtitle': newSubtitle,
+                      'book_name': newTitle,
+                      'book_details': newSubtitle,
                       'status': updatedStatus,
                       'category': updatedCategory,
                       'imageUrl': updatedImageUrl,

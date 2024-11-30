@@ -110,11 +110,40 @@ class ApiService {
         headers: _defaultHeaders(headers),
         body: jsonEncode(body),
       );
+      print(body);
       return _handleResponse(response);
     } catch (e) {
       throw Exception('PATCH request failed: $e');
     }
   }
+
+  Future<void> patchWithFile(String endpoint, {
+  required Map<String, String> fields,
+  required File file,
+  required String fileFieldName,
+}) async {
+  final uri = Uri.parse('$baseUrl$endpoint');
+  final request = http.MultipartRequest('PATCH', uri);
+
+  // Add fields
+  fields.forEach((key, value) {
+    request.fields[key] = value;
+  });
+  print(fields);
+
+  // Add file
+  final multipartFile = await http.MultipartFile.fromPath(
+    fileFieldName,
+    file.path,
+  );
+  request.files.add(multipartFile);
+
+  final response = await request.send();
+  if (response.statusCode != 200) {
+    throw Exception('Failed to patch: ${response.statusCode}');
+  }
+}
+
 
   /// DELETE request
   Future<dynamic> delete(String endpoint,
