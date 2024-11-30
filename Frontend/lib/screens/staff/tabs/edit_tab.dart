@@ -14,7 +14,10 @@ class EditTab extends StatefulWidget {
 class EditTabState extends State<EditTab> {
   final ApiService apiService = ApiService(); // API service instance
   List<dynamic> books = []; // List to hold fetched books
+  List<dynamic> filteredBooks = []; // List to hold filtered books
   bool isLoading = true; // Loading state
+  String searchQuery = ""; // Store search query
+  String? selectedCategory; // Store selected category
 
   @override
   void initState() {
@@ -26,7 +29,8 @@ class EditTabState extends State<EditTab> {
     try {
       final data = await apiService.get('/books'); // Fetch books from API
       setState(() {
-        books = data; // Update the books list
+        books = data;
+        filteredBooks = books; // Initially show all books
         isLoading = false; // Set loading to false
       });
     } catch (e) {
@@ -37,41 +41,141 @@ class EditTabState extends State<EditTab> {
     }
   }
 
+  void filterBooks() {
+    setState(() {
+      filteredBooks = books.where((book) {
+        final matchesSearch = searchQuery.isEmpty ||
+            book['book_name']
+                .toString()
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase());
+        final matchesCategory =
+            selectedCategory == null || book['category'] == selectedCategory;
+        return matchesSearch && matchesCategory;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : books.isEmpty
-                ? const Center(child: Text('No books available'))
-                : GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                      childAspectRatio: 0.7,
-                    ),
-                    itemCount: books.length,
-                    itemBuilder: (context, index) {
-                      final book = books[index];
-                      return GestureDetector(
-                        onTap: () {
-                          editBook(book);
-                        },
-                        child: BookCard(
-                          bookId: book['book_id'].toString(),
-                          title: book['book_name'],
-                          subtitle: book['book_details'],
-                          status: book['status'],
-                          imageUrl: book['book_image'], category: book['category'],
+      body: RefreshIndicator(
+        onRefresh: fetchBooks,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            style: const TextStyle(color: Colors.black),
+                            onChanged: (value) {
+                              searchQuery = value;
+                              filterBooks();
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.amber[200],
+                              filled: true,
+                              prefixIcon: const Icon(Icons.search),
+                              hintText: "Search books by name...",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: Colors.amber,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                  ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            value: selectedCategory,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedCategory = value;
+                                filterBooks();
+                              });
+                            },
+                            items: [
+                              const DropdownMenuItem(
+                                  value: null, child: Text("All Categories")),
+                              ...books
+                                  .map<String>((book) => book['category'])
+                                  .toSet()
+                                  .map((category) => DropdownMenuItem(
+                                        value: category,
+                                        child: Text(category),
+                                      ))
+                                  .toList(),
+                            ],
+                            decoration: InputDecoration(
+                              labelText: "Filter by Category",
+                              prefixIcon: const Icon(Icons.keyboard_arrow_down),
+                              filled: true,
+                              fillColor: Colors.amber[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: Colors.amber,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: filteredBooks.isEmpty
+                          ? SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'No books found',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            )
+                          : GridView.builder(
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 8.0,
+                                mainAxisSpacing: 8.0,
+                                childAspectRatio: 0.7,
+                              ),
+                              itemCount: filteredBooks.length,
+                              itemBuilder: (context, index) {
+                                final book = filteredBooks[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    editBook(book);
+                                  },
+                                  child: BookCard(
+                                    bookId: book['book_id'].toString(),
+                                    title: book['book_name'],
+                                    subtitle: book['book_details'],
+                                    status: book['status'],
+                                    imageUrl: book['book_image'],
+                                    category: book['category'],
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: addBook,
@@ -172,13 +276,7 @@ class EditTabState extends State<EditTab> {
     final ImagePicker picker = ImagePicker();
     String? selectedCategory = initialCategory;
 
-    // Predefined list of categories
-    final List<String> categories = [
-      'Sci-fi',
-      'Academic',
-      'Fantasy',
-      'Horror'
-    ];
+    final List<String> categories = ['Sci-fi', 'Academic', 'Fantasy', 'Horror'];
 
     showDialog(
       context: context,
@@ -264,8 +362,7 @@ class EditTabState extends State<EditTab> {
                       nameController.text,
                       detailsController.text,
                       selectedImage,
-                      selectedCategory ??
-                          'Unknown', // Default category if none selected
+                      selectedCategory ?? 'Unknown',
                     );
                     Navigator.of(context).pop();
                   },

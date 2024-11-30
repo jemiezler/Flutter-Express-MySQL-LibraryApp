@@ -54,110 +54,113 @@ class HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
-          // Search Bar and Category Filter
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  style: const TextStyle(color: Colors.black),
-                  onChanged: (value) {
-                    searchQuery = value;
-                    filterBooks();
-                  },
-                  decoration: InputDecoration(
-                    fillColor: Colors.amber[200],
-                    filled: true,
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: "Search books by name...",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide: const BorderSide(
-                        color: Colors.amber,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  value: selectedCategory,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCategory = value;
+    return RefreshIndicator(
+       onRefresh: fetchBooks,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            // Search Bar and Category Filter
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    style: const TextStyle(color: Colors.black),
+                    onChanged: (value) {
+                      searchQuery = value;
                       filterBooks();
-                    });
-                  },
-                  items: [
-                    const DropdownMenuItem(
-                        value: null, child: Text("All Categories")),
-                    ...books
-                        .map<String>((book) => book['category'])
-                        .toSet()
-                        .map((category) => DropdownMenuItem(
-                              value: category,
-                              child: Text(category),
-                            ))
-                        .toList(),
-                  ],
-                  decoration: InputDecoration(
-                    labelText: "Filter by Category",
-                    prefixIcon: const Icon(Icons.keyboard_arrow_down),
-                    filled: true,
-                    fillColor: Colors.amber[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide: const BorderSide(
-                        color: Colors.amber,
-                        width: 1,
+                    },
+                    decoration: InputDecoration(
+                      fillColor: Colors.amber[200],
+                      filled: true,
+                      prefixIcon: const Icon(Icons.search),
+                      hintText: "Search books by name...",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: const BorderSide(
+                          color: Colors.amber,
+                          width: 1,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // Book List
-          Expanded(
-            child: isLoading
-                ? const Center(
-                    child:
-                        CircularProgressIndicator()) // Show loading indicator
-                : GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Number of columns
-                      crossAxisSpacing: 8.0, // Space between columns
-                      mainAxisSpacing: 8.0, // Space between rows
-                      childAspectRatio:
-                          0.7, // Adjust the height-to-width ratio of items
-                    ),
-                    itemCount: filteredBooks
-                        .length, // Use the length of filtered books
-                    itemBuilder: (context, index) {
-                      final book = filteredBooks[index];
-                      return _HomeCard(
-                        bookId:
-                            book['book_id'].toString(), // Map book_id to bookId
-                        title: book['book_name'], // Map book_name to title
-                        subtitle: book[
-                            'book_details'], // Map book_details to subtitle
-                        status: book['status'], // Map status
-                        imageUrl:
-                            book['book_image'], // Map book_image to imageUrl
-                      );
+                const SizedBox(width: 16),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                        filterBooks();
+                      });
                     },
+                    items: [
+                      const DropdownMenuItem(
+                          value: null, child: Text("All Categories")),
+                      ...books
+                          .map<String>((book) => book['category'])
+                          .toSet()
+                          .map((category) => DropdownMenuItem(
+                                value: category,
+                                child: Text(category),
+                              ))
+                          .toList(),
+                    ],
+                    decoration: InputDecoration(
+                      labelText: "Filter by Category",
+                      prefixIcon: const Icon(Icons.keyboard_arrow_down),
+                      filled: true,
+                      fillColor: Colors.amber[200],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: const BorderSide(
+                          color: Colors.amber,
+                          width: 1,
+                        ),
+                      ),
+                    ),
                   ),
-          ),
-        ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Book List
+            Expanded(
+              child: isLoading
+                  ? const Center(
+                      child:
+                          CircularProgressIndicator()) // Show loading indicator
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // Number of columns
+                        crossAxisSpacing: 8.0, // Space between columns
+                        mainAxisSpacing: 8.0, // Space between rows
+                        childAspectRatio:
+                            0.7, // Adjust the height-to-width ratio of items
+                      ),
+                      itemCount: filteredBooks
+                          .length, // Use the length of filtered books
+                      itemBuilder: (context, index) {
+                        final book = filteredBooks[index];
+                        return _HomeCard(
+                          bookId:
+                              book['book_id'].toString(), // Map book_id to bookId
+                          title: book['book_name'], // Map book_name to title
+                          subtitle: book[
+                              'book_details'], // Map book_details to subtitle
+                          status: book['status'], // Map status
+                          imageUrl:
+                              book['book_image'], // Map book_image to imageUrl
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

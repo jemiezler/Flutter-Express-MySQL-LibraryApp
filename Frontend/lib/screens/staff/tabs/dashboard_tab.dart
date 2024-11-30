@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../../../utils/ApiService.dart';
 
@@ -41,41 +40,41 @@ class DashboardTabState extends State<DashboardTab> {
     return Scaffold(
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : dashboardData.isEmpty
-              ? const Center(child: Text('No dashboard data available'))
-              : Container(
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const CurrentTimeDisplay(),
-                      _buildStatCard(
-                        icon: Icons.check_circle,
-                        title: 'Available Books',
-                        count: dashboardData['available'] ?? 0,
-                        color: Colors.green[200],
-                      ),
-                      _buildStatCard(
-                        icon: Icons.pending,
-                        title: 'Pending Books',
-                        count: dashboardData['pending'] ?? 0,
-                        color: Colors.orange[200],
-                      ),
-                      _buildStatCard(
-                        icon: Icons.import_export,
-                        title: 'Borrowed Books',
-                        count: dashboardData['borrowed'] ?? 0,
-                        color: Colors.blue[200],
-                      ),
-                      _buildStatCard(
-                        icon: Icons.block,
-                        title: 'Disabled Books',
-                        count: dashboardData['disabled'] ?? 0,
-                        color: Colors.red[200],
-                      ),
-                    ],
-                  ),
-                ),
+          : RefreshIndicator(
+              onRefresh: fetchDashboardData, // Trigger data refresh
+              child: dashboardData.isEmpty
+                  ? const Center(child: Text('No dashboard data available'))
+                  : ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        const CurrentTimeDisplay(),
+                        _buildStatCard(
+                          icon: Icons.check_circle,
+                          title: 'Available Books',
+                          count: dashboardData['available'] ?? 0,
+                          color: Colors.green[200],
+                        ),
+                        _buildStatCard(
+                          icon: Icons.pending,
+                          title: 'Pending Books',
+                          count: dashboardData['pending'] ?? 0,
+                          color: Colors.orange[200],
+                        ),
+                        _buildStatCard(
+                          icon: Icons.import_export,
+                          title: 'Borrowed Books',
+                          count: dashboardData['borrowed'] ?? 0,
+                          color: Colors.blue[200],
+                        ),
+                        _buildStatCard(
+                          icon: Icons.block,
+                          title: 'Disabled Books',
+                          count: dashboardData['disabled'] ?? 0,
+                          color: Colors.red[200],
+                        ),
+                      ],
+                    ),
+            ),
     );
   }
 
